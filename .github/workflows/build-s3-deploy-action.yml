@@ -4,8 +4,6 @@
 name: Deploy Build Output From Artifact to S3 Action
 
 on:
-  # 추후 삭제해야함
-  push:
   workflow_call:
     inputs:
       build_artifact_id:
@@ -52,7 +50,7 @@ jobs:
           echo $(aws --version)
 
       - name: IAM Role 인증
-        uses: aws-actions/configure-aws-credentials@v1.7.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           # IAM Role ARN
           role-to-assume: arn:aws:iam::590184073129:role/s3-web-deployer
@@ -62,5 +60,6 @@ jobs:
       - name: S3에 빌드 결과물 배포
         run: |
           echo "::group::S3에 빌드 결과물 배포"
-          # aws s3 cp --recursive ${{ steps.download_build_artifact.outputs.download-path }} s3://s3-web-deployer
+          # dist 폴더 동기화
+          aws s3 sync ${{ steps.download_build_artifact.outputs.download-path }} S3://howaboutthere-web-frontend-bucket/
           echo "::endgroup::"

@@ -7,30 +7,27 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: pr 브랜치 체크아웃
-        uses: actions/checkout@v4
-        with:
-          # pr head commit으로 checkout
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: build 실행
-        id: build
-        uses: HowAboutThere/aws-action-test/.github/workflows/npm-build-action.yml@main
+    uses: HowAboutThere/aws-action-test/.github/workflows/npm-build-action.yml@main
+    with:
+      build-script: build
+      branch-ref: ${{ github.event.pull_request.head.sha }}
 
       # https://octokit.github.io/rest.js/v21/#pulls 를 따릅니다
       # build 성공 시 merge approve 합니다
       # 그 외의 경우 merge denied 됩니다
 
+  pr-review:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: pr review 하기
         uses: actions/github-script@v7
         if: always()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const noPackageJSON ='${{ steps.build.outputs.NO_PACKAGE_JSON }}';
-            const buildResult = '${{ steps.build.outputs.BUILD_RESULT }}';
+            const noPackageJSON ='${{ needs.build.outputs.no-package-json }}';
+            const buildResult = '${{ needs.build.outputs.build-result }}';
             const reviewResult = noPackageJSON === "false" && buildResult === "success" ? 'APPROVE' : 'REQUEST_CHANGES';
 
             const output = `

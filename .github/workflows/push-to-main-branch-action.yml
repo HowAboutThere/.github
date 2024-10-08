@@ -10,6 +10,7 @@ jobs:
     uses: ./.github/workflows/npm-build-action.yml
 
   deploy:
+    needs: build
     with:
       build_artifact_id: ${{ needs.build.outputs.build-artifact-id }}
     uses: ./.github/workflows/build-s3-deploy-action.yml

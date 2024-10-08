@@ -10,9 +10,18 @@ on:
         type: string
         description: "빌드 결과물 아티팩트 명"
         required: true
-
-env:
-  AWS_REGION: ap-northeast-2
+      aws-iam-role-arn:
+        type: string
+        description: "IAM Role ARN"
+        required: true
+      aws-s3-bucket-name:
+        type: string
+        description: "S3 Bucket Name"
+        required: true
+      aws-region:
+        type: string
+        description: "AWS Region"
+        required: true
 
 permissions:
   id-token: write # JWT 요청을 위한 권한
@@ -53,13 +62,13 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           # IAM Role ARN
-          role-to-assume: arn:aws:iam::590184073129:role/s3-web-deployer
+          role-to-assume: ${{ inputs.aws-iam-role-arn }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ inputs.aws-region }}
 
       - name: S3에 빌드 결과물 배포
         run: |
           echo "::group::S3에 빌드 결과물 배포"
           # dist 폴더 동기화
-          aws s3 sync "${{ steps.download_build_artifact.outputs.download-path }}"  s3://howaboutthere-web-frontend-bucket --delete
+          aws s3 sync "${{ steps.download_build_artifact.outputs.download-path }}"  "s3://${{inputs.aws-s3-bucket-name}}" --delete
           echo "::endgroup::"

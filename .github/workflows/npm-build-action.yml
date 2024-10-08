@@ -4,10 +4,16 @@ name: Npm Node Build Action
 
 on:
   workflow_call:
+    outputs:
+      build-artifact-id:
+        description: "빌드 결과물 아티팩트 ID"
+        value: ${{ jobs.build.outputs.artifact-id }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      artifact-id: ${{ steps.upload_build_artifact.outputs.artifact-id }}
 
     steps:
       - name: pr 브랜치 체크아웃
@@ -115,6 +121,7 @@ jobs:
       # 타 위치에서 워크플로 호출시 build 파일을 사용할 수 있도록, artifact로 업로드해놓습니다
       # 사용을 원할 경우 outputs.artifact-id를 사용하여 download하면 됩니다
       - name: build 파일 artifact로 내보내기
+        id: upload_build_artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-output

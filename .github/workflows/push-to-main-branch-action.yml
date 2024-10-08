@@ -1,0 +1,15 @@
+name: Main Branch Push Action
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: ./.github/workflows/npm-build-action.yml
+
+  deploy:
+    with:
+      build_artifact_id: ${{ needs.build.outputs.build-artifact-id }}
+    uses: ./.github/workflows/build-s3-deploy-action.yml

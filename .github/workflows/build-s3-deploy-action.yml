@@ -23,6 +23,7 @@ jobs:
         id: download_build_artifact
         uses: actions/download-artifact@v4
         with:
+          path: ${{github.workspace}}/build
           name: ${{ inputs.build-artifact-name }}
 
       - name: 빌드 결과물 확인

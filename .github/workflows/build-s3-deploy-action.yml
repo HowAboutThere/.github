@@ -61,5 +61,5 @@ jobs:
         run: |
           echo "::group::S3에 빌드 결과물 배포"
           # dist 폴더 동기화
-          aws s3 sync ${{ steps.download_build_artifact.outputs.download-path }} S3://howaboutthere-web-frontend-bucket/
+          aws s3 sync "${{ steps.download_build_artifact.outputs.download-path }}/${{ inputs.build-artifact-name }}"  S3://howaboutthere-web-frontend-bucket --delete
           echo "::endgroup::"

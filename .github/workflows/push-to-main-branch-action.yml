@@ -7,17 +7,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: main 브랜치 체크아웃
-        uses: actions/checkout@v4
-        with:
-          ref: main
-      - name: react build
-        uses: HowAboutThere/aws-action-test/.github/workflows/npm-build-action.yml
+    uses: HowAboutThere/aws-action-test/.github/workflows/npm-build-action.yml@main
+    with:
+      build-script: build
+      branch-ref: main
 
   deploy:
     needs: build
+    uses: HowAboutThere/aws-action-test/.github/workflows/build-s3-deploy-action.yml@main
     with:
       build_artifact_id: ${{ needs.build.outputs.build-artifact-id }}
-    uses: HowAboutThere/aws-action-test/.github/workflows/build-s3-deploy-action.yml

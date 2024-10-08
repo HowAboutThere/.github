@@ -4,6 +4,16 @@ name: Npm Node Build Action
 
 on:
   workflow_call:
+    inputs:
+      branch-ref:
+        description: "참조 브랜치"
+        type: string
+        required: true
+      build-script:
+        description: "빌드 스크립트"
+        type: string
+        required: false
+        default: "build"
     outputs:
       no-package-json:
         description: "package.json 파일이 없는 경우"
@@ -24,6 +34,12 @@ jobs:
       artifact-id: ${{ steps.upload_build_artifact.outputs.artifact-id }}
 
     steps:
+      - name: 브랜치 체크아웃
+        uses: actions/checkout@v4
+        with:
+          # pr head commit으로 checkout
+          ref: ${{ inputs.branch-ref}}
+
       - name: node 설치
         uses: actions/setup-node@v4
         with:
@@ -36,7 +52,7 @@ jobs:
       - name: build 시도
         id: build
         env:
-          BUILD_SCRIPT: ${{vars.build-script || 'build'}}
+          BUILD_SCRIPT: ${{inputs.build-script}}
 
         # 절대 경로로 찾기
         # 경로로 이동하기

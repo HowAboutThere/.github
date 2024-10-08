@@ -62,13 +62,13 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           # IAM Role ARN
-          role-to-assume: ${{ inputs.aws-iam-role-arn }}
+          role-to-assume: ${{ secrets.aws-iam-role-arn }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ inputs.aws-region }}
+          aws-region: ${{ secrets.aws-region }}
 
       - name: S3에 빌드 결과물 배포
         run: |
           echo "::group::S3에 빌드 결과물 배포"
           # dist 폴더 동기화
-          aws s3 sync "${{ steps.download_build_artifact.outputs.download-path }}"  "s3://${{inputs.aws-s3-bucket-name}}" --delete
+          aws s3 sync "${{ steps.download_build_artifact.outputs.download-path }}"  "s3://${{secrets.aws-s3-bucket-name}}" --delete
           echo "::endgroup::"

@@ -16,4 +16,4 @@ jobs:
     needs: build
     uses: HowAboutThere/aws-action-test/.github/workflows/build-s3-deploy-action.yml@main
     with:
-      build_artifact_id: ${{ needs.build.outputs.build-artifact-id }}
+      build-artifact-name: ${{ needs.build.outputs.build-artifact-name }}

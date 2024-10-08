@@ -6,9 +6,9 @@ name: Deploy Build Output From Artifact to S3 Action
 on:
   workflow_call:
     inputs:
-      build_artifact_id:
+      build-artifact-name:
         type: string
-        description: "빌드 결과물 아티팩트 ID"
+        description: "빌드 결과물 아티팩트 명"
         required: true
 
 env:
@@ -26,7 +26,7 @@ jobs:
         id: download_build_artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.build_artifact_id }}
+          name: ${{ inputs.build-artifact-name }}
 
       - name: 빌드 결과물 확인
         run: |

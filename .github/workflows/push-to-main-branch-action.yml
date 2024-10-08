@@ -16,9 +16,8 @@ jobs:
   deploy:
     needs: build
     uses: HowAboutThere/aws-action-test/.github/workflows/build-s3-deploy-action.yml@main
-    secrets:
+    with:
+      build-artifact-name: build-output
       aws-iam-role-arn: ${{ secrets.AWS_IAM_ROLE_ARN }}
       aws-s3-bucket-name: ${{ secrets.AWS_S3_BUCKET_NAME }}
       aws-region: ${{ secrets.AWS_REGION }}
-    with:
-      build-artifact-name: build-output

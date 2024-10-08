@@ -11,9 +11,10 @@ jobs:
     with:
       build-script: build
       branch-ref: main
+      build-artifact-name: build-output
 
   deploy:
     needs: build
     uses: HowAboutThere/aws-action-test/.github/workflows/build-s3-deploy-action.yml@main
     with:
-      build-artifact-name: ${{ needs.build.outputs.build-artifact-name }}
+      build-artifact-name: build-output

@@ -14,6 +14,11 @@ on:
         type: string
         required: false
         default: "build"
+      build-artifact-name:
+        description: "빌드 결과물 아티팩트 명"
+        type: string
+        required: false
+        default: "build-output"
     outputs:
       no-package-json:
         description: "package.json 파일이 없는 경우"
@@ -21,9 +26,6 @@ on:
       build-result:
         description: "빌드 결과"
         value: ${{ jobs.build.outputs.build-result }}
-      build-artifact-id:
-        description: "빌드 결과물 아티팩트 ID"
-        value: ${{ jobs.build.outputs.artifact-id }}
 
 jobs:
   build:
@@ -106,5 +108,5 @@ jobs:
         id: upload_build_artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-output
+          name: ${{ inputs.build-artifact-name }}
           path: ${{steps.build.outputs.BUILD_DIST_DIR}}

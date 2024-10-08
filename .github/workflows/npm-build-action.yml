@@ -5,6 +5,12 @@ name: Npm Node Build Action
 on:
   workflow_call:
     outputs:
+      no-package-json:
+        description: "package.json 파일이 없는 경우"
+        value: ${{ jobs.build.outputs.no-package-json }}
+      build-result:
+        description: "빌드 결과"
+        value: ${{ jobs.build.outputs.build-result }}
       build-artifact-id:
         description: "빌드 결과물 아티팩트 ID"
         value: ${{ jobs.build.outputs.artifact-id }}
@@ -13,15 +19,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
+      no-package-json: ${{ steps.build.outputs.NO_PACKAGE_JSON }}
+      build-result: ${{ steps.build.outputs.BUILD_RESULT }}
       artifact-id: ${{ steps.upload_build_artifact.outputs.artifact-id }}
 
     steps:
-      - name: pr 브랜치 체크아웃
-        uses: actions/checkout@v4
-        with:
-          # pr head commit으로 checkout
-          ref: ${{ github.event.pull_request.head.sha }}
-
       - name: node 설치
         uses: actions/setup-node@v4
         with:
@@ -81,42 +83,6 @@ jobs:
           dist_dir=$(dirname "$package_json")/dist
           echo "BUILD_DIST_DIR=${dist_dir}" >> $GITHUB_OUTPUT
           echo "NO_PACKAGE_JSON=${no_package_json}" >> $GITHUB_OUTPUT
-
-      # https://octokit.github.io/rest.js/v21/#pulls 를 따릅니다
-      # build 성공 시 merge approve 합니다
-      # 그 외의 경우 merge denied 됩니다
-
-      - name: pr review 하기
-        uses: actions/github-script@v7
-        if: always()
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const noPackageJSON ='${{ steps.build.outputs.NO_PACKAGE_JSON }}';
-            const buildResult = '${{ steps.build.outputs.BUILD_RESULT }}';
-            const reviewResult = noPackageJSON === "false" && buildResult === "success" ? 'APPROVE' : 'REQUEST_CHANGES';
-
-            const output = `
-            #### 빌드 테스트 결과: ${buildResult}
-            `;
-
-            if (noPackageJSON === "true"){
-              github.rest.pulls.createReview({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.issue.number,
-                event: reviewResult,
-                body: '빌드 가능한 프로젝트가 없습니다. 다시 한번 확인해주세요'
-              }); 
-            }else {
-              github.rest.pulls.createReview({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.issue.number,
-                event: reviewResult,
-                body: output
-              }); 
-            }
 
       # 타 위치에서 워크플로 호출시 build 파일을 사용할 수 있도록, artifact로 업로드해놓습니다
       # 사용을 원할 경우 outputs.artifact-id를 사용하여 download하면 됩니다

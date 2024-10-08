@@ -7,7 +7,14 @@ on:
 
 jobs:
   build:
-    uses: ./.github/workflows/npm-build-action.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: main 브랜치 체크아웃
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: react build
+        uses: ./.github/workflows/npm-build-action.yml
 
   deploy:
     needs: build

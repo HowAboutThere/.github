@@ -10,18 +10,6 @@ on:
         type: string
         description: "빌드 결과물 아티팩트 명"
         required: true
-      aws-iam-role-arn:
-        type: string
-        description: "IAM Role ARN"
-        required: true
-      aws-s3-bucket-name:
-        type: string
-        description: "S3 Bucket Name"
-        required: true
-      aws-region:
-        type: string
-        description: "AWS Region"
-        required: true
 
 permissions:
   id-token: write # JWT 요청을 위한 권한

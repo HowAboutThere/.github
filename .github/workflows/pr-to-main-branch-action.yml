@@ -17,7 +17,7 @@ jobs:
 
       - name: build 실행
         id: build
-        uses: HowAboutThere/aws-action-test/.github/workflows/npm-build-action.yml
+        uses: HowAboutThere/aws-action-test/.github/workflows/npm-build-action.yml@main
 
       # https://octokit.github.io/rest.js/v21/#pulls 를 따릅니다
       # build 성공 시 merge approve 합니다

@@ -1,0 +1,10 @@
+name: Main Branch Action
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: ./.github/workflows/npm-build-action.yml

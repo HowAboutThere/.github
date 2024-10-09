@@ -1,0 +1,4 @@
+{
+  "name": "S3 Sync(Deploy) Action From Artifact",
+  "description": "S3에 정적 파일을 배포하는 액션입니다.\n 배포할 파일의 artifact 이름을 전달하면, 해당 파일을 S3에 Sync 합니다."
+}
